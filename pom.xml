@@ -1,0 +1,216 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.zebrajaeger</groupId>
+    <artifactId>static-webpage-test</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <groovy-maven-plugin.version>2.1</groovy-maven-plugin.version>
+        <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+
+        <frontend.node.version>v10.13.0</frontend.node.version>
+        <frontend.npm.version>6.4.1</frontend.npm.version>
+        <frontend.node.folder>node</frontend.node.folder>
+        <frontend.node-modules.folder>node_modules</frontend.node-modules.folder>
+        <frontend.build.folder>build</frontend.build.folder>
+        <frontend.target.path>${project.build.outputDirectory}/frontend</frontend.target.path>
+
+        <frontend.path>${basedir}</frontend.path>
+        <frontend.node.path>${basedir}/${frontend.node.folder}</frontend.node.path>
+        <frontend.node-modules.path>${basedir}/${frontend.node-modules.folder}</frontend.node-modules.path>
+        <frontend.build.path>${basedir}/${frontend.build.folder}</frontend.build.path>
+    </properties>
+
+    <build>
+        <!-- define versions -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <version>${groovy-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>${frontend-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${frontend.target.path}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${frontend.build.path}</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- clean all generated frontend folders (node, node_modules etc)-->
+        <profile>
+            <id>clean-frontend</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>${frontend.node.folder}/**/*</include>
+                                        <include>${frontend.node.folder}</include>
+                                        <include>${frontend.node-modules.folder}/**/*</include>
+                                        <include>${frontend.node-modules.folder}</include>
+                                        <include>${frontend.build.folder}/**/*</include>
+                                        <include>${frontend.build.folder}</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- build frontend  except -Dskip-frontend is given -->
+        <profile>
+            <id>frontend-build</id>
+            <activation>
+                <property>
+                    <name>!skip-frontend</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Prepare skippings -->
+                    <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>groovy-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>change skips(initialize)</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>
+                                        import java.nio.file.*
+
+                                        print '** NodeJs Version: \u001B[35m' + project.properties['frontend.node.version'] + '\u001B[0m'
+                                        println ', npm Version: \u001B[35m' + project.properties['frontend.npm.version'] + '\u001B[0m'
+
+                                        Path nodePath = Paths.get(project.properties['frontend.node.path'])
+                                        println '** Node Path: ' + nodePath
+                                        Path nodeModulesPath = Paths.get(project.properties['frontend.node-modules.path'])
+                                        println '** Node Modules: ' + nodeModulesPath
+
+                                        String skipNode = Files.exists(nodePath).toString()
+                                        project.properties['skip.node.installation'] = skipNode
+                                        println '**> Install Node/npm: \u001B[35m' + !skipNode.toBoolean() + '\u001B[0m'
+
+                                        Boolean forceNpmInstall = properties['force-npm-install'] != null
+                                        String skipNodeModules
+                                        if (forceNpmInstall) {
+                                            skipNodeModules = project.properties['skip.node.modules.installation'] = 'false'
+                                        } else {
+                                            skipNodeModules = Files.exists(nodeModulesPath).toString()
+                                            project.properties['skip.node.modules.installation'] = skipNodeModules
+                                        }
+                                        print '**> Install Node Modules: \u001B[35m' + !skipNodeModules.toBoolean() + '\u001B[0m'
+                                        if (forceNpmInstall) {
+                                            println(' (forced)')
+                                        } else {
+                                            println()
+                                        }
+                                    </source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Frontend build (and install) task -->
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <configuration>
+                            <installDirectory>${frontend.path}</installDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>frontend install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <nodeVersion>${frontend.node.version}</nodeVersion>
+                                    <npmVersion>${frontend.npm.version}</npmVersion>
+                                    <skip>${skip.node.installation}</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                    <workingDirectory>${frontend.path}</workingDirectory>
+                                    <skip>${skip.node.modules.installation}</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>frontend npm build</id>
+                                <goals>
+                                    <goal>gulp</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <arguments>--prod</arguments>
+                                    <workingDirectory>${frontend.path}</workingDirectory>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

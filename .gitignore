@@ -1,6 +1,11 @@
+# frontend
 node
 node_modules
 build
 
+# maven
+target
+
+# IDE
 .idea
 **/*.iml
