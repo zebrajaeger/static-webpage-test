@@ -1,0 +1,20 @@
+{
+  "links": [
+    {
+      "label": "Link1",
+      "ref": "#"
+    },
+    {
+      "label": "Link2",
+      "ref": "#"
+    },
+    {
+      "label": "Link3",
+      "ref": "#"
+    },
+    {
+      "label": "Impressum",
+      "ref": "impressum.html"
+    }
+  ]
+}

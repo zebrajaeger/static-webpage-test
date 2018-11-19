@@ -1,0 +1,30 @@
+{
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "gulp": "latest",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^3.10.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssbeautify": "^1.0.1",
+    "gulp-extname": "^0.2.2",
+    "gulp-fn": "latest",
+    "gulp-front-matter": "latest",
+    "gulp-hb": "^7.0.1",
+    "gulp-html-beautify": "^1.0.1",
+    "gulp-load-plugins": "latest",
+    "gulp-mode": "^1.0.2",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sass-glob": "^1.0.9",
+    "gulp-sequence": "^1.0.0",
+    "gulp-sourcemaps": "latest",
+    "gulp-uglify": "^3.0.1",
+    "handlebars": "latest",
+    "handlebars-helpers": "latest",
+    "handlebars-layouts": "latest",
+    "node-sass": "^4.10.0",
+    "run-sequence": "^2.2.1"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,23 @@
+<nav class="navigation navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand logo" href="index.html">
+        <img src="assets/img/logo.jpg" alt="Logo">
+        Logo
+    </a>
+    <ul class="level-0">
+        {{#each navigation}}
+            <li><a href="{{ref}}">{{label}}</a>
+                {{#each items}}
+                    <ul class="level-1">
+                        <li><a href="{{ref}}">{{label}}</a>
+                            {{#each items}}
+                                <ul class="level-2">
+                                    <li><a href="{{ref}}">{{label}}</a></li>
+                                </ul>
+                            {{/each}}
+                        </li>
+                    </ul>
+                {{/each}}
+            </li>
+        {{/each}}
+    </ul>
+</nav>

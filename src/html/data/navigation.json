@@ -1,0 +1,41 @@
+[
+  {
+    "label": "foo",
+    "ref": "#",
+    "items": [
+      {
+        "label": "foo1",
+        "ref": "#",
+        "items": [
+          {
+            "label": "foo11",
+            "ref": "#"
+          },
+          {
+            "label": "foo12",
+            "ref": "#"
+          }
+        ]
+      },
+      {
+        "label": "foo1",
+        "ref": "#",
+        "items": [
+          {
+            "label": "foo21",
+            "ref": "#"
+          },
+          {
+            "label": "foo22",
+            "ref": "#"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "bar",
+    "ref": "#",
+    "items": []
+  }
+]

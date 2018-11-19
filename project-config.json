@@ -1,0 +1,51 @@
+{
+  "src": "src",
+  "target": "build",
+  "html": {
+    "src": "html/*.hbs",
+    "target": ".",
+    "partials": "html/partials/**/*.hbs",
+    "data": "html/data/*.json",
+    "helpers": "html/helpers/*.js",
+    "watch": "html/**/*",
+    "debug":0
+  },
+  "assets": {
+    "src": "assets/**/*",
+    "target": "assets"
+  },
+  "css": {
+    "app": {
+      "src": "css/app.scss",
+      "target": "css",
+      "watch": [
+        "css/app.scss",
+        "css/app/**/*"
+      ]
+    },
+    "vendor": {
+      "src": "css/vendor.scss",
+      "target": "css",
+      "watch": [
+        "css/vendor.scss",
+        "css/vendor/**/*"
+      ]
+    }
+  },
+  "js": {
+    "app": {
+      "src": "js/app/**/*.js",
+      "target": "js",
+      "watch": [
+        "js/app/**/*"
+      ]
+    },
+    "vendor": {
+      "src": "js/vendor/**/*.js",
+      "target": "js",
+      "watch": [
+        "js/vendor/**/*"
+      ]
+    }
+  }
+}
