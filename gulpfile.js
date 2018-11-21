@@ -12,6 +12,13 @@ p.path = require('path');
 p.bs = require('browser-sync').create();
 p.runSequence = require('run-sequence');
 
+p.hbhelpers = {
+    helpers: require('handlebars-helpers'),
+    layouts: require('handlebars-layouts'),
+    repeat: require('handlebars-helper-repeat')
+};
+console.log("HELPERS", p.hbhelpers)
+
 // ---------- config ---------- 
 var c = require('./project-config.json');
 p.m = p.mode({
@@ -70,8 +77,7 @@ g.task('html', function () {
         .data(resolveAll(c.src, c.html.data))
         .data({timestamp: Date.now()})
         .helpers(resolveAll(c.src, c.html.helpers))
-        .helpers(p.handlebarsHelpers)
-        .helpers(p.handlebarsLayouts)
+        .helpers(p.hbhelpers)
         .partials(resolveAll(c.src, c.html.partials));
 
     return g

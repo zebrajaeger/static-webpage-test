@@ -24,6 +24,7 @@
     "handlebars": "latest",
     "handlebars-helpers": "latest",
     "handlebars-layouts": "latest",
+    "handlebars-helper-repeat": "latest",
     "node-sass": "latest",
     "run-sequence": "latest"
   },
